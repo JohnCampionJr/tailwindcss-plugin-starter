@@ -4,6 +4,7 @@
   "description": "A short description of the plugin",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "tsc --watch & cd ./demo && npm run-script dev",
     "build": "tsc",
     "release": "np",
     "test": "tsc && c8 jest"

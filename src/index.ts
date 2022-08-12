@@ -21,7 +21,7 @@ const examplePlugin = plugin.withOptions<PluginConfig>(
        */
 
       addBase({
-        h1: { fontSize: theme('fontSize.2xl') },
+        h1: { fontSize: theme('fontSize.3xl') },
         h2: { fontSize: theme('fontSize.xl') },
       })
 
