@@ -1,6 +1,16 @@
-const plugin = require('tailwindcss/plugin')
+import * as plugin from 'tailwindcss/plugin'
+import type { KeyValuePair, ResolvableTo } from 'tailwindcss/types/config'
 
-const examplePlugin = plugin.withOptions(
+export interface PluginThemeConfig {
+  tabSize: ResolvableTo<KeyValuePair>
+}
+
+export interface PluginConfig {
+  className: string
+  theme: Partial<PluginThemeConfig>
+}
+
+const examplePlugin = plugin.withOptions<PluginConfig>(
   function (options) {
     const className = options ? options.className : 'markdown'
 
@@ -11,8 +21,8 @@ const examplePlugin = plugin.withOptions(
        */
 
       addBase({
-        'h1': { fontSize: theme('fontSize.2xl') },
-        'h2': { fontSize: theme('fontSize.xl') },
+        h1: { fontSize: theme('fontSize.2xl') },
+        h2: { fontSize: theme('fontSize.xl') },
       })
 
       /**
@@ -36,8 +46,8 @@ const examplePlugin = plugin.withOptions(
 
       matchUtilities(
         {
-          tab: value => ({
-            tabSize: value
+          tab: (value: any) => ({
+            tabSize: value,
           }),
         },
         { values: theme('tabSize') }
@@ -62,12 +72,15 @@ const examplePlugin = plugin.withOptions(
 
       addVariant('optional', '&:optional')
 
+      // @ts-expect-error ctx is not in TW types
       addVariant('foo', ctx => {
         // Do stuff with ctx
-        return `.foo ${ctx.container.nodes[0].selector}`
+        return `& ${ctx.container.nodes[0].selector}`
       })
     }
-  }, function (options) {
+  },
+  // @ts-expect-error - Config is return value, but content is not included here
+  function (options) {
     /**
      * Provide default values
      */
@@ -78,9 +91,9 @@ const examplePlugin = plugin.withOptions(
           2: '2',
           4: '4',
           8: '8',
-        }
+        },
       },
-    }
+    } as Partial<PluginConfig>
   }
 )
 

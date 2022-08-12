@@ -1,5 +1,5 @@
 const path = require('path')
-const examplePlugin = require('.')
+const examplePlugin = require('../dist/index.js')
 const postcss = require('postcss')
 const tailwindcss = require('tailwindcss')
 
@@ -10,7 +10,7 @@ function run(config, css = '@tailwind utilities', plugin = tailwindcss) {
       plugins: [examplePlugin],
       corePlugins: {
         preflight: false,
-      }
+      },
     },
     ...config,
   }
@@ -43,10 +43,13 @@ it('addBase', () => {
 
 it('addUtilities', () => {
   const config = {
-    content: [{ raw: String.raw`
+    content: [
+      {
+        raw: String.raw`
     <div class="content-hidden"></div>
-    <div class="content-visible"></div>`
-  }],
+    <div class="content-visible"></div>`,
+      },
+    ],
   }
 
   return run(config).then(result => {
@@ -63,8 +66,7 @@ it('addUtilities', () => {
 })
 
 it('matchUtilities', () => {
-  const config = { content: [{ raw: String.raw`<div class="tab-2"></div>` }],
-  }
+  const config = { content: [{ raw: String.raw`<div class="tab-2"></div>` }] }
 
   return run(config).then(result => {
     expect(result.css).toMatchCss(String.raw`
@@ -81,7 +83,7 @@ it('addComponents', () => {
     plugins: [
       examplePlugin({
         className: 'btn',
-      })
+      }),
     ],
   }
 
@@ -96,8 +98,7 @@ it('addComponents', () => {
 })
 
 it('addVariant', () => {
-  const config = { content: [{ raw: String.raw`<div class="optional:hidden"></div>` }],
-  }
+  const config = { content: [{ raw: String.raw`<div class="optional:hidden"></div>` }] }
 
   return run(config).then(result => {
     expect(result.css).toMatchCss(String.raw`
@@ -109,12 +110,12 @@ it('addVariant', () => {
 })
 
 it('addVariant (function)', () => {
-  const config = { content: [{ raw: String.raw`<div class="foo:hidden"></div>` }],
-  }
+  const config = { content: [{ raw: String.raw`<div class="foo:hidden"></div>` }] }
 
   return run(config).then(result => {
+    console.log(result.css)
     expect(result.css).toMatchCss(String.raw`
-      .foo .hidden {
+      .foo\:hidden .hidden {
         display: none;
       }
     `)
